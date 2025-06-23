@@ -6,7 +6,7 @@ export interface MCPServerConfig {
   enableWebSocket?: boolean;
   cors?: boolean;
   corsOrigin?: string;
-  logLevel?: "debug" | "info" | "warn" | "error";
+  logLevel?: 'debug' | 'info' | 'warn' | 'error';
 }
 
 export interface MCPResourceConfig {
@@ -25,7 +25,7 @@ export interface MCPResponse {
   success: boolean;
   data?: {
     content: Array<{
-      type: "text" | "image" | "file";
+      type: 'text' | 'image' | 'file';
       text?: string;
       url?: string;
       metadata?: Record<string, any>;

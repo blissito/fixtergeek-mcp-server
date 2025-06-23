@@ -5,7 +5,7 @@ import type {
   MCPResourceResponse,
   MCPToolResponse,
   MCPResponse,
-} from "./types";
+} from './types';
 
 export abstract class MCPServer {
   protected config: MCPServerConfig;
@@ -16,12 +16,12 @@ export abstract class MCPServer {
   constructor(config: MCPServerConfig = {}) {
     this.config = {
       port: 3001,
-      host: "localhost",
+      host: 'localhost',
       enableHttp: true,
       enableWebSocket: false,
       cors: true,
-      corsOrigin: "*",
-      logLevel: "info",
+      corsOrigin: '*',
+      logLevel: 'info',
       ...config,
     };
   }
@@ -33,7 +33,7 @@ export abstract class MCPServer {
     name: string,
     uri: string,
     metadata: Record<string, any> = {},
-    handler: () => Promise<MCPResourceResponse>
+    handler: () => Promise<MCPResourceResponse>,
   ): void {
     this.resources.set(name, {
       name,
@@ -41,7 +41,7 @@ export abstract class MCPServer {
       metadata,
       handler,
     });
-    this.log("info", `📁 Recurso registrado: ${name} -> ${uri}`);
+    this.log('info', `📁 Recurso registrado: ${name} -> ${uri}`);
   }
 
   /**
@@ -50,14 +50,14 @@ export abstract class MCPServer {
   registerTool(
     name: string,
     metadata: Record<string, any> = {},
-    handler: (params?: any) => Promise<MCPToolResponse>
+    handler: (params?: any) => Promise<MCPToolResponse>,
   ): void {
     this.tools.set(name, {
       name,
       metadata,
       handler,
     });
-    this.log("info", `🛠️ Herramienta registrada: ${name}`);
+    this.log('info', `🛠️ Herramienta registrada: ${name}`);
   }
 
   /**
@@ -69,7 +69,7 @@ export abstract class MCPServer {
         try {
           return await resource.handler();
         } catch (error) {
-          this.log("error", `Error leyendo recurso ${name}: ${error}`);
+          this.log('error', `Error leyendo recurso ${name}: ${error}`);
           throw error;
         }
       }
@@ -89,7 +89,7 @@ export abstract class MCPServer {
     try {
       return await tool.handler(params);
     } catch (error) {
-      this.log("error", `Error ejecutando herramienta ${name}: ${error}`);
+      this.log('error', `Error ejecutando herramienta ${name}: ${error}`);
       throw error;
     }
   }
@@ -97,18 +97,21 @@ export abstract class MCPServer {
   /**
    * Procesa una consulta del usuario
    */
-  async processUserQuery(query: string, context?: any): Promise<MCPResponse> {
+  async processUserQuery(
+    query: string,
+    _context?: unknown,
+  ): Promise<MCPResponse> {
     const lowerQuery = query.toLowerCase();
 
     // Comandos básicos
-    if (lowerQuery.includes("hola") || lowerQuery.includes("hello")) {
+    if (lowerQuery.includes('hola') || lowerQuery.includes('hello')) {
       return {
         success: true,
         data: {
           content: [
             {
-              type: "text",
-              text: "¡Hola! Soy tu asistente MCP. ¿En qué puedo ayudarte?",
+              type: 'text',
+              text: '¡Hola! Soy tu asistente MCP. ¿En qué puedo ayudarte?',
             },
           ],
         },
@@ -116,16 +119,16 @@ export abstract class MCPServer {
       };
     }
 
-    if (lowerQuery.includes("ayuda") || lowerQuery.includes("help")) {
-      const availableTools = Array.from(this.tools.keys()).join(", ");
-      const availableResources = Array.from(this.resources.keys()).join(", ");
+    if (lowerQuery.includes('ayuda') || lowerQuery.includes('help')) {
+      const availableTools = Array.from(this.tools.keys()).join(', ');
+      const availableResources = Array.from(this.resources.keys()).join(', ');
 
       return {
         success: true,
         data: {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `Comandos disponibles:\n• Herramientas: ${availableTools}\n• Recursos: ${availableResources}\n• "hola" - Saludos\n• "hora" - Ver hora actual\n• "clima" - Simular clima\n• "calcula X + Y" - Calculadora simple`,
             },
           ],
@@ -134,14 +137,14 @@ export abstract class MCPServer {
       };
     }
 
-    if (lowerQuery.includes("hora") || lowerQuery.includes("time")) {
+    if (lowerQuery.includes('hora') || lowerQuery.includes('time')) {
       const now = new Date();
       return {
         success: true,
         data: {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `🕐 La hora actual es: ${now.toLocaleString()}`,
             },
           ],
@@ -150,13 +153,13 @@ export abstract class MCPServer {
       };
     }
 
-    if (lowerQuery.includes("clima") || lowerQuery.includes("weather")) {
+    if (lowerQuery.includes('clima') || lowerQuery.includes('weather')) {
       const weatherConditions = [
-        "☀️ Soleado",
-        "🌤️ Parcialmente nublado",
-        "☁️ Nublado",
-        "🌧️ Lluvioso",
-        "⛈️ Tormenta",
+        '☀️ Soleado',
+        '🌤️ Parcialmente nublado',
+        '☁️ Nublado',
+        '🌧️ Lluvioso',
+        '⛈️ Tormenta',
       ];
       const randomWeather =
         weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
@@ -166,7 +169,7 @@ export abstract class MCPServer {
         data: {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `🌤️ Clima simulado: ${randomWeather} - 22°C`,
             },
           ],
@@ -175,16 +178,16 @@ export abstract class MCPServer {
       };
     }
 
-    if (lowerQuery.includes("calcula") || lowerQuery.includes("calculate")) {
+    if (lowerQuery.includes('calcula') || lowerQuery.includes('calculate')) {
       try {
-        const expression = query.replace(/calcula|calculate/gi, "").trim();
+        const expression = query.replace(/calcula|calculate/gi, '').trim();
         const result = eval(expression);
         return {
           success: true,
           data: {
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: `🧮 Resultado: ${expression} = ${result}`,
               },
             ],
@@ -194,7 +197,7 @@ export abstract class MCPServer {
       } catch (error) {
         return {
           success: false,
-          error: "No pude procesar esa expresión matemática",
+          error: 'No pude procesar esa expresión matemática',
           timestamp: Date.now(),
         };
       }
@@ -206,8 +209,8 @@ export abstract class MCPServer {
       data: {
         content: [
           {
-            type: "text",
-            text: "No entiendo ese comando. Escribe 'ayuda' para ver las opciones disponibles.",
+            type: 'text',
+            text: 'No entiendo ese comando. Escribe \'ayuda\' para ver las opciones disponibles.',
           },
         ],
       },
@@ -253,11 +256,11 @@ export abstract class MCPServer {
    * Sistema de logging
    */
   protected log(
-    level: "debug" | "info" | "warn" | "error",
-    message: string
+    level: 'debug' | 'info' | 'warn' | 'error',
+    message: string,
   ): void {
     const timestamp = new Date().toISOString();
-    const logLevel = this.config.logLevel || "info";
+    const logLevel = this.config.logLevel || 'info';
 
     const levels = { debug: 0, info: 1, warn: 2, error: 3 };
     if (levels[level] < levels[logLevel as keyof typeof levels]) {

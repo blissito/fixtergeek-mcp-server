@@ -1,8 +1,8 @@
 // Integración con LLMs reales
-import type { MCPResponse } from "./types";
+import type { MCPResponse } from './types';
 
 export interface LLMConfig {
-  provider: "openai" | "anthropic" | "ollama" | "custom";
+  provider: 'openai' | 'anthropic' | 'ollama' | 'custom';
   apiKey?: string;
   model?: string;
   baseUrl?: string;
@@ -12,7 +12,7 @@ export interface LLMConfig {
 
 export interface LLMRequest {
   messages: Array<{
-    role: "system" | "user" | "assistant";
+    role: 'system' | 'user' | 'assistant';
     content: string;
   }>;
   tools?: Array<{
@@ -46,21 +46,21 @@ export class OpenAIProvider extends LLMProvider {
   async chat(request: LLMRequest): Promise<LLMResponse> {
     try {
       const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
+        'https://api.openai.com/v1/chat/completions',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${this.config.apiKey}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: this.config.model || "gpt-3.5-turbo",
+            model: this.config.model || 'gpt-3.5-turbo',
             messages: request.messages,
             temperature: this.config.temperature || 0.7,
             max_tokens: this.config.maxTokens || 1000,
             tools: request.tools,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -71,7 +71,7 @@ export class OpenAIProvider extends LLMProvider {
       const choice = data.choices[0];
 
       return {
-        content: choice.message.content || "",
+        content: choice.message.content || '',
         toolCalls: choice.message.tool_calls,
       };
     } catch (error) {
@@ -89,18 +89,18 @@ export class OllamaProvider extends LLMProvider {
   async chat(request: LLMRequest): Promise<LLMResponse> {
     try {
       const response = await fetch(
-        `${this.config.baseUrl || "http://localhost:11434"}/api/chat`,
+        `${this.config.baseUrl || 'http://localhost:11434'}/api/chat`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: this.config.model || "llama2",
+            model: this.config.model || 'llama2',
             messages: request.messages,
             stream: false,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -110,7 +110,7 @@ export class OllamaProvider extends LLMProvider {
       const data = (await response.json()) as any;
 
       return {
-        content: data.message.content || "",
+        content: data.message.content || '',
       };
     } catch (error) {
       throw new Error(`Error calling Ollama: ${error}`);
@@ -120,7 +120,7 @@ export class OllamaProvider extends LLMProvider {
   async isAvailable(): Promise<boolean> {
     try {
       const response = await fetch(
-        `${this.config.baseUrl || "http://localhost:11434"}/api/tags`
+        `${this.config.baseUrl || 'http://localhost:11434'}/api/tags`,
       );
       return response.ok;
     } catch {
@@ -133,12 +133,12 @@ export class OllamaProvider extends LLMProvider {
 export class LLMFactory {
   static createProvider(config: LLMConfig): LLMProvider {
     switch (config.provider) {
-      case "openai":
-        return new OpenAIProvider(config);
-      case "ollama":
-        return new OllamaProvider(config);
-      default:
-        throw new Error(`Proveedor no soportado: ${config.provider}`);
+    case 'openai':
+      return new OpenAIProvider(config);
+    case 'ollama':
+      return new OllamaProvider(config);
+    default:
+      throw new Error(`Proveedor no soportado: ${config.provider}`);
     }
   }
 }
@@ -165,7 +165,10 @@ export class MCPLLMIntegration {
     this.availableResources = resources;
   }
 
-  async processUserQuery(query: string, context?: any): Promise<MCPResponse> {
+  async processUserQuery(
+    query: string,
+    _context?: unknown,
+  ): Promise<MCPResponse> {
     if (!this.llmProvider) {
       // Fallback a respuestas simuladas si no hay LLM
       return this.fallbackResponse(query);
@@ -175,7 +178,7 @@ export class MCPLLMIntegration {
       // Verificar si el LLM está disponible
       const isAvailable = await this.llmProvider.isAvailable();
       if (!isAvailable) {
-        console.warn("LLM no disponible, usando respuestas simuladas");
+        console.warn('LLM no disponible, usando respuestas simuladas');
         return this.fallbackResponse(query);
       }
 
@@ -185,8 +188,8 @@ export class MCPLLMIntegration {
       // Llamar al LLM
       const llmResponse = await this.llmProvider.chat({
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: query },
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: query },
         ],
         tools: this.createToolDefinitions(),
       });
@@ -194,7 +197,7 @@ export class MCPLLMIntegration {
       // Procesar la respuesta del LLM
       return this.processLLMResponse(llmResponse, query);
     } catch (error) {
-      console.error("Error procesando query con LLM:", error);
+      console.error('Error procesando query con LLM:', error);
       return this.fallbackResponse(query);
     }
   }
@@ -202,8 +205,8 @@ export class MCPLLMIntegration {
   private createSystemPrompt(): string {
     return `Eres un asistente MCP (Model Context Protocol) que puede acceder a recursos y herramientas.
 
-Recursos disponibles: ${this.availableResources.join(", ")}
-Herramientas disponibles: ${this.availableTools.join(", ")}
+Recursos disponibles: ${this.availableResources.join(', ')}
+Herramientas disponibles: ${this.availableTools.join(', ')}
 
 Responde de manera útil y amigable. Si el usuario pide usar una herramienta específica, indícale cómo hacerlo.
 Si no entiendes algo, pide aclaración.`;
@@ -214,7 +217,7 @@ Si no entiendes algo, pide aclaración.`;
       name: tool,
       description: `Ejecuta la herramienta ${tool}`,
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {},
         required: [],
       },
@@ -223,14 +226,14 @@ Si no entiendes algo, pide aclaración.`;
 
   private processLLMResponse(
     llmResponse: LLMResponse,
-    originalQuery: string
+    _originalQuery: string,
   ): MCPResponse {
     return {
       success: true,
       data: {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: llmResponse.content,
           },
         ],
@@ -242,14 +245,14 @@ Si no entiendes algo, pide aclaración.`;
   private fallbackResponse(query: string): MCPResponse {
     const lowerQuery = query.toLowerCase();
 
-    if (lowerQuery.includes("hola") || lowerQuery.includes("hello")) {
+    if (lowerQuery.includes('hola') || lowerQuery.includes('hello')) {
       return {
         success: true,
         data: {
           content: [
             {
-              type: "text",
-              text: "¡Hola! Soy tu asistente MCP. ¿En qué puedo ayudarte?",
+              type: 'text',
+              text: '¡Hola! Soy tu asistente MCP. ¿En qué puedo ayudarte?',
             },
           ],
         },
@@ -262,7 +265,7 @@ Si no entiendes algo, pide aclaración.`;
       data: {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: 'No entiendo ese comando. Escribe "ayuda" para ver las opciones disponibles.',
           },
         ],
