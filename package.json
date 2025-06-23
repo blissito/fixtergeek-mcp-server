@@ -32,7 +32,11 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
-    "git:push": "./scripts/git-push.sh"
+    "git:push": "./scripts/git-push.sh",
+    "publish:patch": "./scripts/npm-publish.sh",
+    "publish:minor": "npm version minor && ./scripts/npm-publish.sh",
+    "publish:major": "npm version major && ./scripts/npm-publish.sh",
+    "publish:custom": "./scripts/npm-publish.sh"
   },
   "keywords": [
     "mcp",

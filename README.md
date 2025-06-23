@@ -329,6 +329,12 @@ npm run type-check   # TypeScript check
 
 # Git
 npm run git:push     # Add, commit y push automático
+
+# NPM Publish
+npm run publish:patch # Publicar con bump de patch (0.0.7 → 0.0.8)
+npm run publish:minor # Publicar con bump de minor (0.0.7 → 0.1.0)
+npm run publish:major # Publicar con bump de major (0.0.7 → 1.0.0)
+npm run publish:custom # Publicar con versión personalizada
 ```
 
 ### Uso del script de Git
@@ -346,6 +352,35 @@ npm run git:push "docs: update README with npm badges"
 npm run git:push "fix: resolve TypeScript compilation errors"
 npm run git:push "test: add comprehensive test coverage"
 ```
+
+### Uso del script de NPM Publish
+
+```bash
+# Publicar con bump automático de patch
+npm run publish:patch
+
+# Publicar con bump automático de minor
+npm run publish:minor
+
+# Publicar con bump automático de major
+npm run publish:major
+
+# Publicar con versión personalizada
+npm run publish:custom 0.0.8
+
+# Usando el script directamente
+./scripts/npm-publish.sh 0.1.0
+```
+
+### 🎯 Características del script de publicación:
+
+- ✅ **Validaciones automáticas**: Git repo, login npm, linting, tests, build
+- ✅ **Gestión de versiones**: Bump automático o versión personalizada
+- ✅ **Confirmaciones interactivas**: Te pregunta antes de publicar
+- ✅ **Commit automático**: Hace commit de cambios pendientes
+- ✅ **Push automático**: Sube los cambios al repositorio
+- ✅ **Mensajes informativos**: Con colores y emojis
+- ✅ **Manejo de errores**: Detiene el proceso si algo falla
 
 ## 🤝 Contribuir
 
