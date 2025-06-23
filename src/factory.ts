@@ -47,7 +47,11 @@ export function createMCPServer(config: MCPWithLLMConfig = {}) {
 }
 
 // Ejemplos de configuración
-export const exampleConfigs = {
+export const exampleConfigs: {
+  openai: MCPWithLLMConfig;
+  ollama: MCPWithLLMConfig;
+  simulated: MCPWithLLMConfig;
+} = {
   // Con OpenAI
   openai: {
     port: 3001,
@@ -66,7 +70,8 @@ export const exampleConfigs = {
     llm: {
       provider: "ollama" as const,
       baseUrl: "http://localhost:11434",
-      model: "llama2",
+      // El modelo puede ser cualquier modelo disponible en tu instancia de Ollama
+      model: process.env.OLLAMA_MODEL || "llama2",
       temperature: 0.7,
     },
   },

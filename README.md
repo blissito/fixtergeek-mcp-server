@@ -1,4 +1,7 @@
-# @fixtergeek/mcp-server
+# fixtergeek-mcp-server
+
+[![npm version](https://img.shields.io/npm/v/fixtergeek-mcp-server.svg?style=flat-square)](https://www.npmjs.com/package/fixtergeek-mcp-server)
+[![npm downloads](https://img.shields.io/npm/dm/fixtergeek-mcp-server.svg?style=flat-square)](https://www.npmjs.com/package/fixtergeek-mcp-server)
 
 Servidor MCP (Model Context Protocol) modular y extensible con integración de LLMs para React y otras aplicaciones.
 
@@ -11,11 +14,12 @@ Servidor MCP (Model Context Protocol) modular y extensible con integración de L
 - ✅ **Logging configurable** con diferentes niveles
 - ✅ **TypeScript** con tipos completos
 - ✅ **Fallback a respuestas simuladas** cuando no hay LLM
+- ✅ **Tests completos** con Vitest
 
 ## 📦 Instalación
 
 ```bash
-npm install @fixtergeek/mcp-server
+npm install fixtergeek-mcp-server
 ```
 
 ## 🔧 Uso Básico
@@ -23,7 +27,7 @@ npm install @fixtergeek/mcp-server
 ### Servidor Simple (Sin LLM)
 
 ```typescript
-import { createMCPServer } from "@fixtergeek/mcp-server";
+import { createMCPServer } from "fixtergeek-mcp-server";
 
 const server = createMCPServer({
   port: 3001,
@@ -38,7 +42,7 @@ server.start().then(() => {
 ### Con Integración de LLM
 
 ```typescript
-import { createMCPServer, exampleConfigs } from "@fixtergeek/mcp-server";
+import { createMCPServer, exampleConfigs } from "fixtergeek-mcp-server";
 
 // Con OpenAI
 const server = createMCPServer({
@@ -96,7 +100,7 @@ curl -X POST http://localhost:3001/query \
 ### OpenAI (GPT)
 
 ```typescript
-import { createMCPServer } from "@fixtergeek/mcp-server";
+import { createMCPServer } from "fixtergeek-mcp-server";
 
 const server = createMCPServer({
   port: 3001,
@@ -118,7 +122,7 @@ const server = createMCPServer({
   llm: {
     provider: "ollama",
     baseUrl: "http://localhost:11434",
-    model: "llama2",
+    model: process.env.OLLAMA_MODEL || "llama2",
     temperature: 0.7,
   },
 });
@@ -129,7 +133,7 @@ const server = createMCPServer({
 ### Registrando Recursos Personalizados
 
 ```typescript
-import { MCPHttpServer } from "@fixtergeek/mcp-server";
+import { MCPHttpServer } from "fixtergeek-mcp-server";
 
 const server = new MCPHttpServer({ port: 3001 });
 
@@ -173,7 +177,7 @@ server.registerTool(
 ## 📋 Configuraciones de Ejemplo
 
 ```typescript
-import { exampleConfigs } from "@fixtergeek/mcp-server";
+import { exampleConfigs } from "fixtergeek-mcp-server";
 
 // OpenAI
 const openaiConfig = exampleConfigs.openai;
@@ -205,6 +209,19 @@ console.log("Herramientas disponibles:", server.getAvailableTools());
 ```
 
 ## 🧪 Pruebas
+
+### Ejecutar Tests
+
+```bash
+# Ejecutar tests en modo watch
+npm test
+
+# Ejecutar tests una vez
+npm run test:run
+
+# Ejecutar tests con coverage
+npm run test:coverage
+```
 
 ### Verificar Servidor
 
@@ -291,6 +308,43 @@ Factory para crear proveedores de LLM.
 class LLMFactory {
   static createProvider(config: LLMConfig): LLMProvider;
 }
+```
+
+## 🚀 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run dev          # Build en modo watch
+npm run build        # Build de producción
+npm run clean        # Limpiar dist
+
+# Tests
+npm test             # Tests en modo watch
+npm run test:run     # Tests una vez
+npm run test:coverage # Tests con coverage
+
+# Linting
+npm run lint         # ESLint
+npm run type-check   # TypeScript check
+
+# Git
+npm run git:push     # Add, commit y push automático
+```
+
+### Uso del script de Git
+
+```bash
+# Usando npm script
+npm run git:push "feat: add new feature"
+
+# Usando el script directamente
+./scripts/git-push.sh "fix: resolve bug in server"
+
+# Ejemplos de mensajes de commit
+npm run git:push "feat: add dynamic Ollama model support"
+npm run git:push "docs: update README with npm badges"
+npm run git:push "fix: resolve TypeScript compilation errors"
+npm run git:push "test: add comprehensive test coverage"
 ```
 
 ## 🤝 Contribuir

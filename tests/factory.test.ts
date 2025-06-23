@@ -84,7 +84,9 @@ describe("Factory", () => {
     it("should have Ollama config", () => {
       expect(exampleConfigs.ollama).toBeDefined();
       expect(exampleConfigs.ollama.llm?.provider).toBe("ollama");
-      expect(exampleConfigs.ollama.llm?.model).toBe("llama2");
+      expect(exampleConfigs.ollama.llm?.model).toBe(
+        process.env.OLLAMA_MODEL || "llama2"
+      );
     });
 
     it("should have simulated config", () => {

@@ -72,7 +72,7 @@ async function ollamaExample() {
     llm: {
       provider: "ollama",
       baseUrl: "http://localhost:11434",
-      model: "llama2",
+      model: process.env.OLLAMA_MODEL || "llama2",
       temperature: 0.7,
     },
   });
