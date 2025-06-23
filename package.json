@@ -1,6 +1,6 @@
 {
   "name": "fixtergeek-mcp-server",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Servidor MCP (Model Context Protocol) modular y extensible con integración de LLMs",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
